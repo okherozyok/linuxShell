@@ -1,36 +1,50 @@
 # 作者：张阳 2019-10-28
 # ping禁止与启动，使用iptables实现。
 
-CMD_HELPER="$0 <net interface> <stop|start>"
+usage() {
+    echo "$0 <net interface> <stop|start>"
+}
 
-errReturn() {
+if [ $# -ne 2 ] || [ "-h" = $1 ]
+then
+    usage
+    exit 1
+fi
+
+NET_INTERFACE=$1
+SWITCH=$2
+
+checkNetInterface() {
+    _NET_IF=`ifconfig -s | grep -v -E 'Iface|lo' | awk '{print $1}'`
+	for _netIf in $_NET_IF
+	do
+	    if [ $_netIf = $1 ]
+		then
+		    return
+		fi
+	done
+	
+	echo "Wrong net interface."
+	exit 1
+}
+checkNetInterface $NET_INTERFACE
+
+ifErrReturn() {
     if [ $? -ne 0 ]
     then
 	    exit 1
     fi
 }
 
-if [ -z $1 ]
+if [ "stop" = $SWITCH ]
 then
-    echo $CMD_HELPER
-    exit 1
-fi
-
-if [ "-h" = $1 ]
+    iptables -A INPUT -i $NET_INTERFACE -p icmp -j DROP
+	ifErrReturn
+elif [ "start" = $SWITCH ]
 then
-    echo $CMD_HELPER
-    exit 0
-fi
-
-if [ "stop" = $2 ]
-then
-    iptables -A INPUT -i $1 -p icmp -j DROP
-	errReturn
-elif [ "start" = $2 ]
-then
-    iptables -D INPUT -i $1 -p icmp -j DROP
-	errReturn
+    iptables -D INPUT -i $NET_INTERFACE -p icmp -j DROP
+	ifErrReturn
 else
-    echo $CMD_HELPER
+    usage
     exit 1
 fi
