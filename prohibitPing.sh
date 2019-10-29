@@ -14,7 +14,7 @@ fi
 NET_INTERFACE=$1
 SWITCH=$2
 
-. commonFunction.sh
+. ./commonFunction.sh
 
 checkNetInterface $NET_INTERFACE
 

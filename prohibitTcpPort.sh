@@ -15,7 +15,7 @@ NET_INTERFACE=$1
 TCP_PORT=$2
 SWITCH=$3
 
-. commonFunction.sh
+. ./commonFunction.sh
 
 checkNetInterface $NET_INTERFACE
 
