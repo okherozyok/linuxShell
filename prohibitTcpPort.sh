@@ -1,5 +1,5 @@
 # 作者：张阳 2019-10-28
-# ping禁止与启动，使用iptables实现。
+# tcp 端口禁止与启动，使用iptables实现。
 
 usage() {
     echo "$0 <net interface> <tcp port> <stop|start>"
